@@ -1,19 +1,23 @@
 package com.example.retailer.adapter
 
-class DistributorPublisherImpl : DistributorPublisher {
+import com.example.retailer.api.distributor.Order
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.springframework.amqp.core.Message
+import com.example.retailer.AmqpConfiguration.Companion.DISTRIBUTOR_EXCHANGE
+import org.springframework.amqp.rabbit.core.RabbitTemplate
+import org.springframework.beans.factory.annotation.Autowired
 
+class DistributorPublisherImpl : DistributorPublisher {
     @Autowired
     private lateinit var template: RabbitTemplate
 
-    @Autowired
-    private lateinit var topic: TopicExchange
 
     override fun placeOrder(order: Order): Boolean {
         val objectMapper = ObjectMapper()
         val message = objectMapper.writeValueAsString(order)
         if (order.id != null) {
             template.convertAndSend(
-                topic.name,
+                DISTRIBUTOR_EXCHANGE,
                 "distributor.placeOrder.elvina-ganieva.${order.id}",
                 message
             ) { m: Message ->
