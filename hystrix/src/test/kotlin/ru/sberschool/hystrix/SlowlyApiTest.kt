@@ -21,6 +21,15 @@ class SlowlyApiTest {
         // для удобства тестирования задаем таймауты на 1 секунду
         .options(Request.Options(1, TimeUnit.SECONDS, 1, TimeUnit.SECONDS, true))
         .target(SlowlyApi::class.java, "http://127.0.0.1:18080", FallbackSlowlyApi())
+
+
+    private val pokeClient = HystrixFeign.builder()
+        .client(ApacheHttpClient())
+        .decoder(JacksonDecoder(mapper))
+        .options(Request.Options(1, TimeUnit.SECONDS, 1, TimeUnit.SECONDS, true))
+        .target(SlowlyApi::class.java, "https://pokeapi.co/api/v2", FallbackSlowlyApi())
+
+
     lateinit var mockServer: ClientAndServer
 
     @BeforeEach
