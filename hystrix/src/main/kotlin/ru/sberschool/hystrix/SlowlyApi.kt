@@ -4,7 +4,7 @@ import feign.RequestLine
 
 interface SlowlyApi {
     @RequestLine("GET /")
-    fun getSomething(): SimpleResponse
+    fun getSomething(): Pokemon
 }
 
 
